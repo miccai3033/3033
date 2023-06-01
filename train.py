@@ -72,7 +72,7 @@ class Trainer:
         self.lc2 = LC2(radiuses=[3,5,7])
 
     def get_dataloader(self, batch_size):
-        paths = [(f"/data/volumes_pelvis/{i}.npz", "mov", "fix") for i in range(0, 48)]
+        paths = [(f"/data/{i}.npz", "mov", "fix") for i in range(0, 48)]
 
         dataset = PatchDataset3D(paths, 51, repeats=1)
         
@@ -80,7 +80,7 @@ class Trainer:
         return DataLoader(dataset, batch_size=batch_size, shuffle=True, num_workers=12, pin_memory=False, drop_last=True)
 
     def get_validation_dataloader(self, batch_size):
-        paths = [(f"/data/volumes_pelvis/{i}.npz", "mov", "fix") for i in range(50, 54)]
+        paths = [(f"/data/{i}.npz", "mov", "fix") for i in range(48, 54)]
         dataset = PatchDataset3D(paths, 51)
         
         print("Validation dataset contains", len(dataset), "patches")
@@ -171,10 +171,10 @@ class Trainer:
                     val_loss += loss.item()
             print(f"Epoch {epoch+1}, Validation loss: {val_loss / num_batches}")
 
-            path = os.path.join(self.base_path, f"{epoch}.{batch}")
+            path = os.path.join("/output", f"{epoch}")
             print(f"Saving model checkpoint at '{path}'")
 
-            torch.save(model.state_dict(), f"{path}.pth")
+            torch.save(self.model.state_dict(), f"{path}.pth")
 
 
 def main():
